@@ -2,9 +2,10 @@
   "name": "research-agent",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "",
+    "test": "npx tsx src/index.ts",
     "dev": "",
     "start": "",
     "build": ""
@@ -14,5 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0"
   }
 }
