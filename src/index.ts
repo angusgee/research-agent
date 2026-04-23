@@ -3,10 +3,10 @@
 import fs from "fs";
 import dotenv from "dotenv";
 import { ApiKeys } from "./types.js";
-import { callOpenAi } from "./providers.js";
-import { callPerplexity } from "./providers.js";
-import { callAnthropic } from "./providers.js";
-import { summariseResponses } from "./providers.js";
+import { callOpenAi,
+        callPerplexity,
+        callAnthropic,
+        summariseResponses } from "./providers.js";
 
 function getUserInput():string[] {
   return process.argv;
