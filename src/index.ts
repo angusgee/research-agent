@@ -52,15 +52,19 @@ if (userPrompt === undefined) {
   throw new Error("[!] No prompt provided, please pass in your prompt as the first and only argument")
 }
 
-const openAiResponse = await callOpenAi(userPrompt);
+const openAiResponse = callOpenAi(userPrompt);
 // console.log(openAiResponse)
 
-const perplexityResponse = await callPerplexity(userPrompt, keys["perplexityKey"]);
+const perplexityResponse = callPerplexity(userPrompt, keys["perplexityKey"]);
 // console.log(perplexityResponse);
 
-const anthropicResponse = await callAnthropic(userPrompt, keys["anthropicKey"]);
+const anthropicResponse = callAnthropic(userPrompt, keys["anthropicKey"]);
 // console.log(anthropicResponse)
 
-const summaryResponse = await summariseResponses(openAiResponse, perplexityResponse, anthropicResponse);
+const values = await Promise.all([
+  openAiResponse, perplexityResponse, anthropicResponse
+]);
 
-console.log(summaryResponse);
+const finalSummary = await summariseResponses(...values);
+
+console.log(finalSummary);

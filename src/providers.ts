@@ -3,10 +3,12 @@ import Anthropic from "@anthropic-ai/sdk";
 
 export async function callOpenAi(prompt: string):Promise<string> {
   const openAiClient = new OpenAI;
+
   const response = await openAiClient.responses.create({
     model: "gpt-5.4",
     input: "Please research this user's question using your web search tool then return your answer and citations: " + prompt
   })
+  
   return response.output_text;
 }
 
@@ -22,8 +24,10 @@ export async function callPerplexity(prompt: string, perplexityApiKey: string):P
       content: "Please research this user's question using your web search tool then return your answer and citations: " + prompt
     }]
   });
+
   const messageContent = response.choices[0].message.content;
   const citations: string[] = (response as any).citations;
+  
   //console.log(JSON.stringify(response, null, 2));
   return messageContent + "\n\n Citations: \n\n" + citations.join(", \n");
 }
