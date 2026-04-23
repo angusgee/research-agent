@@ -1,4 +1,4 @@
-#! /user/bin/env node 
+#! /usr/bin/env node 
 
 import dotenv from "dotenv"
 
@@ -10,15 +10,18 @@ function parseUserInput(args:string[]):string{
   // validate input
 }
 
-type apiKeys = {
+type ApiKeys = {
   openAiKey: string,
   perplexityKey: string,
   anthropicKey: string
 }
 
-function getAPIKeysFromEnv(): apiKeys{
-  dotenv.config();
-  const apiKeys:apiKeys = {
+function getAPIKeysFromEnv(): ApiKeys{
+    const result = dotenv.config();
+    if (result.error) {
+      console.log("[!] Failed to load .env: " + result.error)
+    }
+  const apiKeys:ApiKeys = {
     openAiKey: process.env.OPEN_API_KEY ?? "",
     perplexityKey: process.env.PERPLEXITY_API_KEY ?? "",
     anthropicKey: process.env.ANTHROPIC_API_KEY ?? ""
@@ -26,15 +29,20 @@ function getAPIKeysFromEnv(): apiKeys{
   return apiKeys;
 }
 
-function handleMissingApiKeys(apiKeys: apiKeys): void {
+function handleMissingApiKeys(apiKeys: ApiKeys): void {
+  const errorArr:string[] = []
   if (apiKeys.openAiKey === "") {
-    console.log("OpenAI api key is missing, please add it")
+    errorArr.push("OpenAI")
   }
   if (apiKeys.perplexityKey === "") {
-    console.log("Perplexity api key is missing, please add it")
+        errorArr.push("Perplexity")
   }
   if (apiKeys.anthropicKey === "") {
-    console.log("Anthropic api key is missing, please add it")
+    errorArr.push("Anthropic")
+  }
+  if (errorArr.length > 0) {
+    throw new Error(errorArr.join(", "))
+    
   }
 }
 
