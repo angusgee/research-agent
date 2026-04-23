@@ -47,12 +47,12 @@ async function callOpenAi(prompt: string):Promise<string> {
   const openAiClient = new OpenAI;
   const response = await openAiClient.responses.create({
     model: "gpt-5.4",
-    input: "Please resarch this user's question using your web search tool then return your answer and citations: " + prompt
+    input: "Please research this user's question using your web search tool then return your answer and citations: " + prompt
   })
   return response.output_text;
 }
 
-async function callPerpexity(prompt: string, perplexityApiKey: string):Promise<string> {
+async function callPerplexity(prompt: string, perplexityApiKey: string):Promise<string> {
   const perplexityClient = new OpenAI({
     baseURL: "https://api.perplexity.ai",
     apiKey: perplexityApiKey,
@@ -79,7 +79,7 @@ async function callAnthropic(prompt: string, anthropicApiKey: string):Promise<st
     max_tokens: 2048, 
     messages: [{
       role: "user",
-      content: "Please resarch this user's question using your web search tool then return your answer and citations: " + prompt
+      content: "Please research this user's question using your web search tool then return your answer and citations: " + prompt
     }],
     model: "claude-opus-4-6"
   })
@@ -96,7 +96,32 @@ async function summariseResponses(openAiResponse: string,
   perplexityResponse: string,
   anthropicResponse: string)
   : Promise<string>{
-  return "";
+
+  const summaryClient = new OpenAI;
+    const response = await summaryClient.responses.create({
+    model: "gpt-5.4",
+    input: `You are a summarisation agent. Your user has used three agents to generate some research. Your task is to summarise the research and remove any duplicate entries. Return a summary of no more than 300 words, followed by all of the unique citations.
+    
+    ==========
+
+    Agent One Research: 
+
+    ${openAiResponse}
+
+    ==========
+
+    Agent Two Research: 
+
+    ${perplexityResponse}
+
+    ==========
+
+    Agent Three Research: 
+
+    ${anthropicResponse}
+    `
+  })
+  return response.output_text;
 }
 
 async function createMarkdownFile(summary: string): Promise<void>{
@@ -111,13 +136,15 @@ if (userPrompt === undefined) {
   throw new Error("[!] No prompt provided, please pass in your prompt as the first and only argument")
 }
 
-// const openAiResponse = await callOpenAi(userPrompt);
+const openAiResponse = await callOpenAi(userPrompt);
 // console.log(openAiResponse)
 
-// const perplexityResponse = await callPerpexity(userPrompt, keys["perplexityKey"]);
+const perplexityResponse = await callPerplexity(userPrompt, keys["perplexityKey"]);
 // console.log(perplexityResponse);
 
-const anthropicResponse = await callAnthropic(userPrompt, keys["anthropicKey"])
+const anthropicResponse = await callAnthropic(userPrompt, keys["anthropicKey"]);
+// console.log(anthropicResponse)
 
-console.log(anthropicResponse)
+const summaryResponse = await summariseResponses(openAiResponse, perplexityResponse, anthropicResponse);
 
+console.log(summaryResponse);
