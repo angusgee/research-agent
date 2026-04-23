@@ -73,7 +73,7 @@ export async function summariseResponses(openAiKey: string, fulfilledPromises: s
    
     const response = await summaryClient.responses.create({
     model: "gpt-5.4",
-    input: `You are a summarisation agent. Your user has used three agents to generate some research. Your task is to summarise the research and remove any duplicate entries. Return a summary of no more than 500 words, followed by all of the unique citations.\n ${researchTexts}
+    input: `You are a summarisation agent. Your user has used three agents to generate some research. Your task is to summarise the research and remove any duplicate entries. Return a summary of no more than 500 words, followed by all of the unique citations. Use markdown format\n ${researchTexts}
     `
   })
   return response.output_text;
