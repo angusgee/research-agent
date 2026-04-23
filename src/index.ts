@@ -2,6 +2,7 @@
 
 import dotenv from "dotenv";
 import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 
 function getUserInput():string[] {
   return process.argv;
@@ -46,7 +47,7 @@ async function callOpenAi(prompt: string):Promise<string> {
   const openAiClient = new OpenAI;
   const response = await openAiClient.responses.create({
     model: "gpt-5.4",
-    input: "Please resarch this user's question using your web search tool then return your answer and citations" + prompt
+    input: "Please resarch this user's question using your web search tool then return your answer and citations: " + prompt
   })
   return response.output_text;
 }
@@ -69,8 +70,26 @@ async function callPerpexity(prompt: string, perplexityApiKey: string):Promise<s
   return messageContent + "\n\n Citations: \n\n" + citations.join(", \n");
 }
 
-async function callAnthropic(prompt: string):Promise<string> {
-  return "";
+async function callAnthropic(prompt: string, anthropicApiKey: string):Promise<string> {
+  const anthropicClient = new Anthropic({
+    apiKey: anthropicApiKey
+  });
+
+  const response = await anthropicClient.messages.create({
+    max_tokens: 2048, 
+    messages: [{
+      role: "user",
+      content: "Please resarch this user's question using your web search tool then return your answer and citations: " + prompt
+    }],
+    model: "claude-opus-4-6"
+  })
+
+  // return JSON.stringify(response.content, null, 2);
+  if (response.content[0].type === "text") {
+    return response.content[0].text;
+  } else {
+    throw new Error("[!] Invalid response from provider")
+  }
 }
 
 async function summariseResponses(openAiResponse: string,
@@ -98,4 +117,7 @@ if (userPrompt === undefined) {
 // const perplexityResponse = await callPerpexity(userPrompt, keys["perplexityKey"]);
 // console.log(perplexityResponse);
 
+const anthropicResponse = await callAnthropic(userPrompt, keys["anthropicKey"])
+
+console.log(anthropicResponse)
 
