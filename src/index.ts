@@ -73,6 +73,17 @@ async function callAnthropic(prompt: string):Promise<string> {
   return "";
 }
 
+async function summariseResponses(openAiResponse: string,
+  perplexityResponse: string,
+  anthropicResponse: string)
+  : Promise<string>{
+  return "";
+}
+
+async function createMarkdownFile(summary: string): Promise<void>{
+
+}
+
 const keys = getAPIKeysFromEnv();
 handleMissingApiKeys(keys);
 
@@ -84,7 +95,7 @@ if (userPrompt === undefined) {
 // const openAiResponse = await callOpenAi(userPrompt);
 // console.log(openAiResponse)
 
-const perplexityResponse = await callPerpexity(userPrompt, keys["perplexityKey"]);
-console.log(perplexityResponse);
+// const perplexityResponse = await callPerpexity(userPrompt, keys["perplexityKey"]);
+// console.log(perplexityResponse);
 
 
