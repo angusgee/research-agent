@@ -19,7 +19,7 @@ export async function callPerplexity(prompt: string, perplexityApiKey: string):P
     model: "sonar",
     messages: [{
       role: "user",
-      content: prompt
+      content: "Please research this user's question using your web search tool then return your answer and citations: " + prompt
     }]
   });
   const messageContent = response.choices[0].message.content;
