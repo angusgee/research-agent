@@ -52,7 +52,7 @@ if (userPrompt === undefined) {
   throw new Error("[!] No prompt provided, please pass in your prompt as the first and only argument")
 }
 
-const openAiResponse = callOpenAi(userPrompt);
+const openAiResponse = callOpenAi(userPrompt, keys["openAiKey"]);
 // console.log(openAiResponse)
 
 const perplexityResponse = callPerplexity(userPrompt, keys["perplexityKey"]);
@@ -65,6 +65,6 @@ const values = await Promise.all([
   openAiResponse, perplexityResponse, anthropicResponse
 ]);
 
-const finalSummary = await summariseResponses(...values);
+const finalSummary = await summariseResponses(...values, keys["openAiKey"]);
 
 console.log(finalSummary);

@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 import Anthropic from "@anthropic-ai/sdk";
 
-export async function callOpenAi(prompt: string):Promise<string> {
-  const openAiClient = new OpenAI;
+export async function callOpenAi(prompt: string, openAiKey: string):Promise<string> {
+  const openAiClient = new OpenAI({apiKey: openAiKey});
 
   const response = await openAiClient.responses.create({
     model: "gpt-5.4",
@@ -54,12 +54,12 @@ export async function callAnthropic(prompt: string, anthropicApiKey: string):Pro
   }
 }
 
-export async function summariseResponses(openAiResponse: string,
+export async function summariseResponses(openAiKey: string, openAiResponse: string,
   perplexityResponse: string,
   anthropicResponse: string)
   : Promise<string>{
 
-  const summaryClient = new OpenAI;
+  const summaryClient = new OpenAI({apiKey: openAiKey});
     const response = await summaryClient.responses.create({
     model: "gpt-5.4",
     input: `You are a summarisation agent. Your user has used three agents to generate some research. Your task is to summarise the research and remove any duplicate entries. Return a summary of no more than 300 words, followed by all of the unique citations.\n\n\n==========\n\n\nAgent One Research:\n\n\n${openAiResponse}\n\n\n==========\n\n\nAgent Two Research:\n\n\n${perplexityResponse}\n\n\n==========\n\n\nAgent Three Research: \n\n\n${anthropicResponse}\n\n\n=========
