@@ -2,8 +2,9 @@
 
 import dotenv from "dotenv"
 
-function getUserInput():string {
-  // get input from args
+
+function getUserInput():string[] {
+  return process.argv;
 }
 
 function parseUserInput(args:string[]):string{
@@ -35,18 +36,22 @@ function handleMissingApiKeys(apiKeys: ApiKeys): void {
     errorArr.push("OpenAI")
   }
   if (apiKeys.perplexityKey === "") {
-        errorArr.push("Perplexity")
+    errorArr.push("Perplexity")
   }
   if (apiKeys.anthropicKey === "") {
     errorArr.push("Anthropic")
   }
   if (errorArr.length > 0) {
     throw new Error(errorArr.join(", "))
-    
   }
 }
 
 const keys = getAPIKeysFromEnv();
 handleMissingApiKeys(keys);
+// console.log(getUserInput()[2]);
+const userPrompt = getUserInput()[2];
+if (userPrompt === undefined) {
+  throw new Error("[!] No prompt provided, please pass in your prompt as the first and only argument")
+}
 
 
