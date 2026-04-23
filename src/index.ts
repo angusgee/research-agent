@@ -1,5 +1,6 @@
 #! /usr/bin/env node 
 
+import fs from "fs";
 import dotenv from "dotenv";
 import { ApiKeys } from "./types.js";
 import { callOpenAi } from "./providers.js";
@@ -40,8 +41,9 @@ function handleMissingApiKeys(apiKeys: ApiKeys): void {
   }
 }
 
-async function createMarkdownFile(summary: string): Promise<void>{
-
+function createMarkdownFile(summary: string): void{
+  const fileName = `REPORT_${Date.now()}.md`
+  fs.writeFileSync(fileName, summary);
 }
 
 const keys = getAPIKeysFromEnv();
@@ -73,4 +75,6 @@ const fulfilledPromises = values.filter(v => v.status === "fulfilled")
 
 const finalSummary = await summariseResponses(keys["openAiKey"], fulfilledPromises );
 
-console.log(finalSummary);
+// console.log(finalSummary);
+
+createMarkdownFile(finalSummary);
