@@ -54,15 +54,13 @@ export async function callAnthropic(prompt: string, anthropicApiKey: string):Pro
   }
 }
 
-export async function summariseResponses(openAiKey: string, openAiResponse: string,
-  perplexityResponse: string,
-  anthropicResponse: string)
+export async function summariseResponses(openAiKey: string, fulfilledPromises: string[])
   : Promise<string>{
 
   const summaryClient = new OpenAI({apiKey: openAiKey});
     const response = await summaryClient.responses.create({
     model: "gpt-5.4",
-    input: `You are a summarisation agent. Your user has used three agents to generate some research. Your task is to summarise the research and remove any duplicate entries. Return a summary of no more than 300 words, followed by all of the unique citations.\n\n\n==========\n\n\nAgent One Research:\n\n\n${openAiResponse}\n\n\n==========\n\n\nAgent Two Research:\n\n\n${perplexityResponse}\n\n\n==========\n\n\nAgent Three Research: \n\n\n${anthropicResponse}\n\n\n=========
+    input: `You are a summarisation agent. Your user has used three agents to generate some research. Your task is to summarise the research and remove any duplicate entries. Return a summary of no more than 300 words, followed by all of the unique citations.\n\n\n==========\n\n\nAgent One Research:\n\n\n${fulfilledPromises[0]}\n\n\n==========\n\n\nAgent Two Research:\n\n\n${fulfilledPromises[1]}\n\n\n==========\n\n\nAgent Three Research: \n\n\n${fulfilledPromises[2]}\n\n\n=========
     `
   })
   return response.output_text;

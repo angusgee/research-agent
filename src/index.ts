@@ -53,18 +53,24 @@ if (userPrompt === undefined) {
 }
 
 const openAiResponse = callOpenAi(userPrompt, keys["openAiKey"]);
-// console.log(openAiResponse)
 
 const perplexityResponse = callPerplexity(userPrompt, keys["perplexityKey"]);
-// console.log(perplexityResponse);
 
 const anthropicResponse = callAnthropic(userPrompt, keys["anthropicKey"]);
-// console.log(anthropicResponse)
 
-const values = await Promise.all([
+const values = await Promise.allSettled([
   openAiResponse, perplexityResponse, anthropicResponse
 ]);
 
-const finalSummary = await summariseResponses(...values, keys["openAiKey"]);
+values.forEach((value) =>{
+  if (value.status === "rejected") {
+    console.log("API call failed: ", value.reason);
+  }
+})
+
+const fulfilledPromises = values.filter(v => v.status === "fulfilled")
+                                .map(v => (v as PromiseFulfilledResult<string>).value);
+
+const finalSummary = await summariseResponses(keys["openAiKey"], fulfilledPromises );
 
 console.log(finalSummary);
