@@ -1,14 +1,10 @@
 #! /usr/bin/env node 
 
 import dotenv from "dotenv"
-
+import OpenAI from "openai"
 
 function getUserInput():string[] {
   return process.argv;
-}
-
-function parseUserInput(args:string[]):string{
-  // validate input
 }
 
 type ApiKeys = {
@@ -23,7 +19,7 @@ function getAPIKeysFromEnv(): ApiKeys{
       console.log("[!] Failed to load .env: " + result.error)
     }
   const apiKeys:ApiKeys = {
-    openAiKey: process.env.OPEN_API_KEY ?? "",
+    openAiKey: process.env.OPENAI_API_KEY ?? "",
     perplexityKey: process.env.PERPLEXITY_API_KEY ?? "",
     anthropicKey: process.env.ANTHROPIC_API_KEY ?? ""
   };
@@ -46,12 +42,33 @@ function handleMissingApiKeys(apiKeys: ApiKeys): void {
   }
 }
 
+async function callOpenAi(prompt: string):Promise<string> {
+  const openAiClient = new OpenAI;
+  const response = await openAiClient.responses.create({
+    model: "gpt-5.4",
+    input: prompt
+  })
+  return response.output_text;
+}
+
+async function callPerpexity(prompt: string):Promise<string> {
+  return "";
+}
+
+async function callAnthropic(prompt: string):Promise<string> {
+  return "";
+}
+
 const keys = getAPIKeysFromEnv();
 handleMissingApiKeys(keys);
-// console.log(getUserInput()[2]);
+
 const userPrompt = getUserInput()[2];
 if (userPrompt === undefined) {
   throw new Error("[!] No prompt provided, please pass in your prompt as the first and only argument")
 }
+
+const openAiResponse = await callOpenAi(userPrompt);
+
+console.log(openAiResponse)
 
 

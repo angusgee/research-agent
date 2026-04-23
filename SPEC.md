@@ -18,9 +18,9 @@ I want the individual reports and a summary of them.
 - markdown file 
 
 ## App Logic
-1. Read prompt from CLI 
-2. Parse prompt 
-2. Read api keys from env
+1. ~~Read prompt from CLI~~
+2. ~~Parse prompt~~
+2. ~~Read api keys from env~~
 3. Read provider configs
 4. Call providers 
 5. Parse responses 
