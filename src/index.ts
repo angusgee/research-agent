@@ -42,7 +42,8 @@ function handleMissingApiKeys(apiKeys: ApiKeys): void {
 }
 
 function createMarkdownFile(summary: string): void{
-  const fileName = `REPORT_${Date.now()}.md`
+  fs.mkdirSync("./reports", {recursive: true})
+  const fileName = `./reports/REPORT_${Date.now()}.md`
   fs.writeFileSync(fileName, summary);
 }
 
